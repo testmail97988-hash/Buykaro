@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>BuyKaro — India's Local Marketplace</title>
+<style>
+:root{--ink:#111827;--muted:#64748b;--brand:#f97316;--brand2:#ea580c;--line:#e5e7eb;--bg:#f8fafc}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:#111827;color:white;padding:16px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:4}
+.logo{font-size:25px;font-weight:900;letter-spacing:-1px}.logo span{color:#fb923c}.tag{font-size:12px;color:#cbd5e1}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:11px 15px;font-weight:750}
+.primary{background:var(--brand);color:white}.primary:hover{background:var(--brand2)}.outline{border:1px solid #475569;color:white;background:transparent}
+.hero{padding:42px 5% 34px;background:linear-gradient(125deg,#111827,#263449);color:white}
+.hero-inner{max-width:1100px;margin:auto;display:grid;grid-template-columns:1.4fr .8fr;gap:24px;align-items:center}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.05;margin:0 0 14px;letter-spacing:-1.4px}.hero p{color:#dbeafe;max-width:570px;line-height:1.6}
+.search{display:flex;background:white;padding:6px;border-radius:14px;max-width:650px;margin-top:22px;gap:5px}.search input{min-width:0;flex:1;border:0;outline:0;padding:10px;color:#111827}
+.hero-card{background:#ffffff12;border:1px solid #ffffff25;border-radius:22px;padding:24px;text-align:center}.hero-card .emoji{font-size:64px}.hero-card b{display:block;font-size:21px;margin:8px}
+main{max-width:1100px;margin:auto;padding:26px 5% 55px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 17px}.section-head h2{margin:0;font-size:23px}.categories{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.cat{background:white;border:1px solid var(--line);border-radius:15px;padding:15px 7px;text-align:center;font-weight:700;color:#334155}.cat .icon{font-size:27px;display:block;margin-bottom:7px}.cat.active{border-color:var(--brand);background:#fff7ed;color:#c2410c}
+.filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.filters select{border:1px solid var(--line);border-radius:10px;padding:9px;background:white;color:#334155}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.product{background:white;border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:0 3px 12px #0f172a08}.product-art{height:150px;display:grid;place-items:center;background:linear-gradient(135deg,#ffedd5,#fef3c7);font-size:60px}.product-body{padding:15px}.product h3{font-size:17px;margin:0 0 7px}.price{font-size:21px;font-weight:900;color:#c2410c}.meta{font-size:12px;color:var(--muted);margin:7px 0 13px}.product-actions{display:flex;gap:8px}.product-actions button{flex:1;padding:9px;font-size:13px}.contact{background:#111827;color:white}.empty{padding:32px;text-align:center;color:var(--muted);background:white;border:1px dashed #cbd5e1;border-radius:16px;grid-column:1/-1}
+.note{font-size:12px;color:#64748b;line-height:1.5;margin-top:18px}
+footer{background:#0b1220;color:#cbd5e1;padding:26px 5%;text-align:center;font-size:13px}.modal-backdrop{position:fixed;inset:0;background:#020617aa;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}.modal{background:white;border-radius:20px;width:min(520px,100%);max-height:90vh;overflow:auto;padding:22px}.modal h2{margin-top:0}.form{display:grid;gap:11px}.form label{font-size:13px;font-weight:750;color:#334155}.form input,.form select,.form textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;margin-top:5px}.form textarea{min-height:75px;resize:vertical}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px}
+@media(max-width:760px){.hero-inner{grid-template-columns:1fr}.hero-card{display:none}.categories{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:repeat(2,1fr)}header{padding:13px 4%}.tag{display:none}}
+@media(max-width:470px){.grid{grid-template-columns:1fr}.product-art{height:130px}.section-head{align-items:flex-start;flex-direction:column}.search button{padding:10px}}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="logo">Buy<span>Karo</span> 🇮🇳</div><div class="tag">India's local buying & selling marketplace</div></div>
+  <button class="primary" onclick="openModal()">＋ Sell an item</button>
+</header>
+<section class="hero">
+ <div class="hero-inner">
+  <div>
+   <h1>Buy local.<br><span style="color:#fb923c">Sell smarter.</span></h1>
+   <p>Discover bikes, phones, fashion, furniture and more from people and businesses around you.</p>
+   <div class="search"><input id="searchInput" placeholder="Search bikes, phones, furniture…" aria-label="Search listings"><button class="primary" onclick="render()">Search</button></div>
+  </div>
+  <div class="hero-card"><div class="emoji">🛍️</div><b>Your marketplace, your way.</b><div style="color:#dbeafe;font-size:14px">Browse • List • Connect</div></div>
+ </div>
+</section>
+<main>
+ <div class="section-head"><h2>Explore categories</h2></div>
+ <div class="categories" id="categories">
+  <button class="cat active" data-cat="All"><span class="icon">✨</span>All items</button>
+  <button class="cat" data-cat="Vehicles"><span class="icon">🏍️</span>Vehicles</button>
+  <button class="cat" data-cat="Electronics"><span class="icon">📱</span>Electronics</button>
+  <button class="cat" data-cat="Fashion"><span class="icon">👕</span>Fashion</button>
+  <button class="cat" data-cat="Furniture"><span class="icon">🪑</span>Furniture</button>
+  <button class="cat" data-cat="Home"><span class="icon">🏠</span>Home & more</button>
+ </div>
+ <div class="section-head" style="margin-top:30px"><h2>Fresh listings</h2><div class="filters"><select id="sort" onchange="render()" aria-label="Sort listings"><option value="new">Newest first</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option></select></div></div>
+ <div class="grid" id="listings"></div>
+ <p class="note">Demo prototype: sample listings are illustrative. Contact buttons use the seller's provided phone number when available. Meet safely in public, inspect items before paying, and never share OTPs or banking PINs.</p>
+</main>
+<footer><b style="color:white">BuyKaro 🇮🇳</b><br>Made for local buying and selling.<br><span style="color:#94a3b8">Prototype preview — online listings are stored only in this browser.</span></footer>
+<div class="modal-backdrop" id="backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+ <div class="modal">
+  <h2 id="modalTitle">List an item on BuyKaro</h2>
+  <form id="listingForm" class="form">
+   <label>Item name *<input id="itemName" required maxlength="70" placeholder="e.g. Splendor bike"></label>
+   <label>Price in ₹ *<input id="itemPrice" required type="number" min="1" max="100000000" placeholder="e.g. 35000"></label>
+   <label>Category<select id="itemCategory"><option>Vehicles</option><option>Electronics</option><option>Fashion</option><option>Furniture</option><option>Home</option></select></label>
+   <label>City / area *<input id="itemCity" required maxlength="60" placeholder="e.g. Dehradun"></label>
+   <label>Seller phone / WhatsApp (optional)<input id="itemPhone" inputmode="tel" maxlength="20" placeholder="e.g. 9876543210"></label>
+   <label>Short description<textarea id="itemDesc" maxlength="240" placeholder="Condition, details, etc."></textarea></label>
+   <div class="modal-actions"><button type="button" onclick="closeModal()" style="background:#e2e8f0">Cancel</button><button class="primary" type="submit">Publish listing</button></div>
+  </form>
+ </div>
+</div>
+<script>
+const seed=[
+ {id:1,name:"Splendor Plus — sample listing",price:42000,cat:"Vehicles",city:"Dehradun",phone:"",desc:"Example listing only. Add your own details.",icon:"🏍️",time:3},
+ {id:2,name:"Smartphone — sample listing",price:8500,cat:"Electronics",city:"Delhi",phone:"",desc:"Example listing only. Check condition before buying.",icon:"📱",time:2},
+ {id:3,name:"Study table — sample listing",price:2200,cat:"Furniture",city:"Jaipur",phone:"",desc:"Example listing only.",icon:"🪑",time:1},
+ {id:4,name:"Casual jacket — sample listing",price:900,cat:"Fashion",city:"Lucknow",phone:"",desc:"Example listing only.",icon:"🧥",time:0}
+];
+let userItems=JSON.parse(localStorage.getItem("buykaro_items")||"[]");
+let activeCat="All";
+const icons={Vehicles:"🏍️",Electronics:"📱",Fashion:"👕",Furniture:"🪑",Home:"📦"};
+function allItems(){return [...userItems,...seed]}
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){
+ const q=document.getElementById("searchInput").value.trim().toLowerCase();
+ let items=allItems().filter(x=>(activeCat==="All"||x.cat===activeCat)&&[x.name,x.city,x.cat,x.desc].join(" ").toLowerCase().includes(q));
+ const sort=document.getElementById("sort").value;
+ if(sort==="low")items.sort((a,b)=>a.price-b.price);else if(sort==="high")items.sort((a,b)=>b.price-a.price);else items.sort((a,b)=>(b.time||0)-(a.time||0));
+ const box=document.getElementById("listings");
+ if(!items.length){box.innerHTML='<div class="empty">No matching items yet. Try another search or list the first item!</div>';return}
+ box.innerHTML=items.map(x=>`<article class="product"><div class="product-art">${safe(x.icon||icons[x.cat]||"📦")}</div><div class="product-body"><h3>${safe(x.name)}</h3><div class="price">₹${Number(x.price).toLocaleString("en-IN")}</div><div class="meta">📍 ${safe(x.city)} · ${safe(x.cat)}</div><p style="font-size:13px;color:#475569;min-height:34px">${safe(x.desc||"Contact seller for details.")}</p><div class="product-actions"><button style="background:#ffedd5;color:#9a3412" onclick="details(${x.id})">Details</button><button class="contact" onclick="contactSeller(${x.id})">Contact seller</button></div></div></article>`).join("");
+}
+function openModal(){document.getElementById("backdrop").style.display="flex"}
+function closeModal(){document.getElementById("backdrop").style.display="none"}
+document.getElementById("backdrop").addEventListener("click",e=>{if(e.target.id==="backdrop")closeModal()});
+document.getElementById("categories").addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(!b)return;activeCat=b.dataset.cat;document.querySelectorAll(".cat").forEach(x=>x.classList.toggle("active",x===b));render()});
+document.getElementById("searchInput").addEventListener("input",render);
+document.getElementById("listingForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const cat=document.getElementById("itemCategory").value;
+ const item={id:Date.now(),name:document.getElementById("itemName").value.trim(),price:Number(document.getElementById("itemPrice").value),cat,city:document.getElementById("itemCity").value.trim(),phone:document.getElementById("itemPhone").value.trim(),desc:document.getElementById("itemDesc").value.trim(),icon:icons[cat]||"📦",time:Date.now()};
+ userItems.unshift(item);localStorage.setItem("buykaro_items",JSON.stringify(userItems));e.target.reset();activeCat="All";document.querySelectorAll(".cat").forEach(x=>x.classList.toggle("active",x.dataset.cat==="All"));closeModal();render();window.scrollTo({top:document.querySelector("main").offsetTop,behavior:"smooth"});
+});
+function details(id){const x=allItems().find(y=>y.id===id);if(x)alert(`${x.name}\nPrice: ₹${Number(x.price).toLocaleString("en-IN")}\nCategory: ${x.cat}\nLocation: ${x.city}\n\n${x.desc||"No description added."}${x.phone?"\nSeller phone: "+x.phone:""}`)}
+function contactSeller(id){const x=allItems().find(y=>y.id===id);if(!x)return;if(!x.phone){alert("This is a sample listing or the seller did not add a phone number. Try adding your own listing with a contact number.");return}const digits=x.phone.replace(/\D/g,"");if(!digits){alert("Please check the seller's phone number.");return}window.open("https://wa.me/"+(digits.length===10?"91"+digits:digits)+"?text="+encodeURIComponent("Hi, I saw your listing on BuyKaro: "+x.name)," _blank")}
+render();
+</script>
+</body>
+</html>

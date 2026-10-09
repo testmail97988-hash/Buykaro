@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BuyKaro - Buy & Sell India</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#f3f5f7;color:#222}
+header{background:#087f5b;color:white;padding:20px;text-align:center}
+header h1{margin:0;font-size:30px}
+header p{margin-bottom:0}
+main{max-width:700px;margin:20px auto;padding:15px}
+.box{background:white;padding:18px;margin-bottom:18px;border-radius:12px;box-shadow:0 2px 8px #ddd}
+input,select,textarea,button{box-sizing:border-box;width:100%;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:7px;font-size:16px}
+button{background:#087f5b;color:white;border:0;font-weight:bold}
+.item{border:1px solid #ddd;padding:12px;border-radius:8px;margin-top:12px}
+.price{color:#087f5b;font-size:20px;font-weight:bold}
+footer{text-align:center;padding:20px;color:#666}
+</style>
+</head>
+<body>
+<header>
+<h1>🛍️ BuyKaro</h1>
+<p>India ka apna buying-selling platform</p>
+</header>
+<main>
+<section class="box">
+<h2>🔎 Product dhoondo</h2>
+<input id="search" placeholder="Bike, mobile, clothes..." oninput="showItems()">
+<div id="items"></div>
+</section>
+<section class="box">
+<h2>➕ Apna product becho</h2>
+<input id="title" placeholder="Product ka naam">
+<input id="price" type="number" placeholder="Price ₹">
+<select id="category">
+<option>Bike</option>
+<option>Mobile</option>
+<option>Electronics</option>
+<option>Clothes</option>
+<option>Other</option>
+</select>
+<input id="city" placeholder="Aapka shehar">
+<input id="phone" type="tel" placeholder="Contact number">
+<button onclick="addItem()">Post Product</button>
+<p id="msg"></p>
+</section>
+</main>
+<footer>BuyKaro © 2026 | Demo Website</footer>
+<script>
+let products=[
+{title:"Example Mobile",price:"5000",category:"Mobile",city:"Delhi",phone:""},
+{title:"Example Bike",price:"25000",category:"Bike",city:"Amroha",phone:""}
+];
+function showItems(){
+let q=document.getElementById('search').value.toLowerCase();
+document.getElementById('items').innerHTML=products.filter(p=>(p.title+" "+p.category+" "+p.city).toLowerCase().includes(q)).map(p=>'<div class="item"><h3>'+p.title+'</h3><div class="price">₹'+p.price+'</div><p>'+p.category+' • '+p.city+'</p>'+(p.phone?'<a href="https://wa.me/91'+p.phone.replace(/\D/g,'')+'">WhatsApp Seller</a>':'')+'</div>').join('')||'Koi product nahi mila.';
+}
+function addItem(){
+let title=document.getElementById('title').value.trim(),price=document.getElementById('price').value,city=document.getElementById('city').value.trim(),phone=document.getElementById('phone').value.trim(),category=document.getElementById('category').value;
+if(!title||!price||!city){document.getElementById('msg').textContent='Naam, price aur shehar bharo.';return}
+products.unshift({title,price,category,city,phone});
+showItems();
+document.getElementById('msg').textContent='Product is demo mein add ho gaya!';
+}
+showItems();
+</script>
+</body>
+</html>

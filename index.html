@@ -2,68 +2,152 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BuyKaro - Buy & Sell India</title>
+
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:#f3f5f7;color:#222}
-header{background:#087f5b;color:white;padding:20px;text-align:center}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f3f6;color:#222}
+header{background:#087f5b;color:white;padding:18px;text-align:center}
 header h1{margin:0;font-size:30px}
-header p{margin-bottom:0}
-main{max-width:700px;margin:20px auto;padding:15px}
-.box{background:white;padding:18px;margin-bottom:18px;border-radius:12px;box-shadow:0 2px 8px #ddd}
-input,select,textarea,button{box-sizing:border-box;width:100%;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:7px;font-size:16px}
-button{background:#087f5b;color:white;border:0;font-weight:bold}
-.item{border:1px solid #ddd;padding:12px;border-radius:8px;margin-top:12px}
-.price{color:#087f5b;font-size:20px;font-weight:bold}
+header p{margin:8px 0 0}
+main{max-width:700px;margin:18px auto;padding:12px}
+.box{background:white;padding:16px;margin-bottom:16px;border-radius:12px}
+input,textarea,button{width:100%;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:7px;font-size:16px}
+button{background:#087f5b;color:white;border:0;font-weight:bold;cursor:pointer}
+.item{background:white;border:1px solid #ddd;padding:12px;margin:12px 0;border-radius:10px}
+.item img{width:100%;max-height:250px;object-fit:contain;background:#f5f5f5}
+.price{color:#087f5b;font-size:22px;font-weight:bold}
 footer{text-align:center;padding:20px;color:#666}
 </style>
 </head>
+
 <body>
 <header>
 <h1>🛍️ BuyKaro</h1>
-<p>India ka apna buying-selling platform</p>
+<p>India ka Apna Buying & Selling Platform 🇮🇳</p>
 </header>
+
 <main>
-<section class="box">
-<h2>🔎 Product dhoondo</h2>
-<input id="search" placeholder="Bike, mobile, clothes..." oninput="showItems()">
-<div id="items"></div>
-</section>
-<section class="box">
-<h2>➕ Apna product becho</h2>
-<input id="title" placeholder="Product ka naam">
+<div class="box">
+<h2>🔍 Product Search</h2>
+<input id="search" placeholder="Mobile, bike, clothes..." oninput="showProducts()">
+</div>
+
+<div class="box">
+<h2>📦 Apna Product Becho</h2>
+<input id="name" placeholder="Product ka naam">
 <input id="price" type="number" placeholder="Price ₹">
-<select id="category">
-<option>Bike</option>
-<option>Mobile</option>
-<option>Electronics</option>
-<option>Clothes</option>
-<option>Other</option>
-</select>
-<input id="city" placeholder="Aapka shehar">
-<input id="phone" type="tel" placeholder="Contact number">
-<button onclick="addItem()">Post Product</button>
-<p id="msg"></p>
-</section>
+<input id="phone" type="tel" placeholder="Contact mobile number">
+<textarea id="description" placeholder="Product ki details"></textarea>
+<label>Product ki photo:</label>
+<input id="photo" type="file" accept="image/*">
+<button onclick="addProduct()">Product Post Karo</button>
+<p id="message"></p>
+</div>
+
+<div class="box">
+<h2>🛒 Available Products</h2>
+<div id="products"></div>
+</div>
 </main>
-<footer>BuyKaro © 2026 | Demo Website</footer>
+
+<footer>BuyKaro © 2026 | Made in India 🇮🇳</footer>
+
 <script>
-let products=[
-{title:"Example Mobile",price:"5000",category:"Mobile",city:"Delhi",phone:""},
-{title:"Example Bike",price:"25000",category:"Bike",city:"Amroha",phone:""}
-];
-function showItems(){
-let q=document.getElementById('search').value.toLowerCase();
-document.getElementById('items').innerHTML=products.filter(p=>(p.title+" "+p.category+" "+p.city).toLowerCase().includes(q)).map(p=>'<div class="item"><h3>'+p.title+'</h3><div class="price">₹'+p.price+'</div><p>'+p.category+' • '+p.city+'</p>'+(p.phone?'<a href="https://wa.me/91'+p.phone.replace(/\D/g,'')+'">WhatsApp Seller</a>':'')+'</div>').join('')||'Koi product nahi mila.';
+let products=JSON.parse(localStorage.getItem("buykaro_products")||"[]");
+
+function showProducts(){
+let query=document.getElementById("search").value.toLowerCase();
+let area=document.getElementById("products");
+area.innerHTML="";
+let found=products.filter(p=>p.name.toLowerCase().includes(query)||p.description.toLowerCase().includes(query));
+
+if(found.length===0){
+area.innerHTML="<p>Abhi koi product nahi mila. Pehla product post karo!</p>";
+return;
 }
-function addItem(){
-let title=document.getElementById('title').value.trim(),price=document.getElementById('price').value,city=document.getElementById('city').value.trim(),phone=document.getElementById('phone').value.trim(),category=document.getElementById('category').value;
-if(!title||!price||!city){document.getElementById('msg').textContent='Naam, price aur shehar bharo.';return}
-products.unshift({title,price,category,city,phone});
-showItems();
-document.getElementById('msg').textContent='Product is demo mein add ho gaya!';
+
+found.slice().reverse().forEach(p=>{
+let div=document.createElement("div");
+div.className="item";
+
+let title=document.createElement("h3");
+title.textContent=p.name;
+div.appendChild(title);
+
+if(p.photo){
+let img=document.createElement("img");
+img.src=p.photo;
+img.alt=p.name;
+div.appendChild(img);
 }
-showItems();
+
+let price=document.createElement("p");
+price.className="price";
+price.textContent="₹"+p.price;
+div.appendChild(price);
+
+let desc=document.createElement("p");
+desc.textContent=p.description;
+div.appendChild(desc);
+
+let contact=document.createElement("button");
+contact.textContent="Seller se Contact Karo";
+contact.onclick=()=>window.open("https://wa.me/91"+p.phone.replace(/\D/g,""),"_blank");
+div.appendChild(contact);
+
+area.appendChild(div);
+});
+}
+
+function addProduct(){
+let name=document.getElementById("name").value.trim();
+let price=document.getElementById("price").value;
+let phone=document.getElementById("phone").value.trim();
+let description=document.getElementById("description").value.trim();
+let file=document.getElementById("photo").files[0];
+
+if(!name||!price||!phone||!description){
+alert("Bhai, saari details bharo!");
+return;
+}
+if(!/^[6-9]\d{9}$/.test(phone)){
+alert("10 digit ka sahi Indian mobile number daalo.");
+return;
+}
+if(products.length>=50){
+alert("Demo mein maximum 50 products rakh sakte ho.");
+return;
+}
+
+function save(photo){
+products.push({name,price,phone,description,photo});
+try{
+localStorage.setItem("buykaro_products",JSON.stringify(products));
+document.getElementById("message").textContent="Product post ho gaya!";
+["name","price","phone","description","photo"].forEach(id=>document.getElementById(id).value="");
+showProducts();
+}catch(e){
+products.pop();
+alert("Storage full hai. Chhoti photo try karo.");
+}
+}
+
+if(file){
+if(file.size>700000){
+alert("Bhai, 700 KB se chhoti photo select karo.");
+return;
+}
+let reader=new FileReader();
+reader.onload=()=>save(reader.result);
+reader.readAsDataURL(file);
+}else{
+save("");
+}
+}
+
+showProducts();
 </script>
 </body>
 </html>
